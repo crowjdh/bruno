@@ -1,0 +1,40 @@
+name: Release packages
+
+on:
+  push:
+    branches: [test/workflow]
+
+jobs:
+  linux-package:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out
+        uses: actions/checkout@v4
+
+      - name: Install Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: '.nvmrc'
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci --legacy-peer-deps
+
+      - name: Build misc
+        run: npm run build:graphql-docs && npm run build:bruno-query && npm run build:bruno-common
+
+      - name: Build sandbox bundle
+        run: npm run sandbox:bundle-libraries --workspace=packages/bruno-js
+
+      - name: Build web
+        run: npm run build:web
+
+      - name: Build Electron app
+        run: npm run build:electron:linux
+
+      - name: List build
+        run: ls -la packages/bruno-electron/out
+
+      - name: Extract version
+        run: jq -r '"VERSION=v\(.version)"' packages/bruno-electron/package.json >> "$GITHUB_ENV"
