@@ -1,10 +1,11 @@
 import each from 'lodash/each';
 import get from 'lodash/get';
-import fileDialog from 'file-dialog';
-import { uuid } from 'utils/common';
-import { BrunoError } from 'utils/common/error';
+import fs from 'fs/promises';
+//import fileDialog from 'file-dialog';
+import { uuid } from '../common';
+//import { BrunoError } from 'utils/common/error';
 import { validateSchema, transformItemsInCollection, hydrateSeqInCollection } from './common';
-import { postmanTranslation } from 'utils/importers/translators/postman_translation';
+import { postmanTranslation } from './translators/postman_translation';
 
 const readFile = (files) => {
   return new Promise((resolve, reject) => {
@@ -80,7 +81,7 @@ const importPostmanV2CollectionItem = (brunoParent, item, parentAuth, options) =
       brunoParent.items.push(brunoFolderItem);
       folderMap[folderName] = brunoFolderItem;
       if (i.item && i.item.length) {
-        importPostmanV2CollectionItem(brunoFolderItem, i.item, i.auth ?? parentAuth, options);
+        importPostmanV2CollectionItem(brunoFolderItem, i.item, i.auth || parentAuth, options);
       }
     } else {
       if (i.request) {
@@ -255,8 +256,8 @@ const importPostmanV2CollectionItem = (brunoParent, item, parentAuth, options) =
           });
         });
 
-        const auth = i.request.auth ?? parentAuth;
-        if (auth?.[auth.type] && auth.type !== 'noauth') {
+        const auth = i.request.auth || parentAuth;
+        if (auth && auth[auth.type] && auth.type !== 'noauth') {
           let authValues = auth[auth.type];
           if (Array.isArray(authValues)) {
             authValues = convertV21Auth(authValues);
@@ -357,14 +358,10 @@ const parsePostmanCollection = (str, options) => {
         return resolve(importPostmanV2Collection(collection, options));
       }
 
-      throw new BrunoError('Unknown postman schema');
+      throw new Error('Unknown postman schema');
     } catch (err) {
       console.log(err);
-      if (err instanceof BrunoError) {
-        return reject(err);
-      }
-
-      return reject(new BrunoError('Unable to parse the postman collection json file'));
+      return reject(new Error('Unable to parse the postman collection json file'));
     }
   });
 };
@@ -375,7 +372,7 @@ const logTranslationDetails = (translationLog) => {
       `[Postman Translation Logs]
 Collections incomplete : ${Object.keys(translationLog || {}).length}` +
         `\nTotal lines incomplete : ${Object.values(translationLog || {}).reduce(
-          (acc, curr) => acc + (curr.script?.length || 0) + (curr.test?.length || 0),
+          (acc, curr) => acc + (curr.script ? curr.script.length : 0) + (curr.test ? curr.test.length : 0),
           0
         )}` +
         `\nSee details below :`,
@@ -396,7 +393,7 @@ const importCollection = (options) => {
       .catch((err) => {
         console.log(err);
         translationLog = {};
-        reject(new BrunoError('Import collection failed'));
+        reject(new Error('Import collection failed'));
       })
       .then(() => {
         logTranslationDetails(translationLog);
@@ -405,4 +402,22 @@ const importCollection = (options) => {
   });
 };
 
-export default importCollection;
+const convertCollection = (filePath) => {
+  return new Promise((resolve, reject) => {
+    fs.readFile(filePath).then((fileContent) => {
+      return parsePostmanCollection(fileContent, {
+        enablePostmanTranslations: {
+          enabled: false,
+        }
+      }).then(transformItemsInCollection)
+        .then(hydrateSeqInCollection)
+        .then(validateSchema)
+        .then(resolve)
+        .catch(reject);
+    });
+  });
+}
+
+export default convertCollection;
+
+//export default importCollection;

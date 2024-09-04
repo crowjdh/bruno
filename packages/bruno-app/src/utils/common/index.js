@@ -1,5 +1,5 @@
 import { customAlphabet } from 'nanoid';
-import xmlFormat from 'xml-formatter';
+//import xmlFormat from 'xml-formatter';
 
 // a customized version of nanoid without using _ and -
 export const uuid = () => {
@@ -59,16 +59,16 @@ export const convertToCodeMirrorJson = (obj) => {
   }
 };
 
-export const safeParseXML = (str, options) => {
-  if (!str || !str.length || typeof str !== 'string') {
-    return str;
-  }
-  try {
-    return xmlFormat(str, options);
-  } catch (e) {
-    return str;
-  }
-};
+//export const safeParseXML = (str, options) => {
+//  if (!str || !str.length || typeof str !== 'string') {
+//    return str;
+//  }
+//  try {
+//    return xmlFormat(str, options);
+//  } catch (e) {
+//    return str;
+//  }
+//};
 
 // Remove any characters that are not alphanumeric, spaces, hyphens, or underscores
 export const normalizeFileName = (name) => {
@@ -76,7 +76,7 @@ export const normalizeFileName = (name) => {
     return name;
   }
 
-  const validChars = /[^\w\s-]/g;
+  const validChars = /[^\w\s-|ㄱ-ㅎ|ㅏ-ㅣ|가-힣]/g;
   const formattedName = name.replace(validChars, '-');
 
   return formattedName;

@@ -42,7 +42,7 @@ export const postmanTranslation = (script, logCallback) => {
     }
     if (modifiedScript.includes('pm.') || modifiedScript.includes('postman.')) {
       modifiedScript = modifiedScript.replace(/^(.*(pm\.|postman\.).*)$/gm, '// $1');
-      logCallback?.();
+      logCallback && logCallback();
     }
     return modifiedScript;
   } catch (e) {
