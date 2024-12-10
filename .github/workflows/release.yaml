@@ -12,33 +12,40 @@ jobs:
       - name: Check out
         uses: actions/checkout@v4
 
-      - name: Install Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version-file: '.nvmrc'
-          cache: npm
+        # - name: Install Node.js
+        #   uses: actions/setup-node@v4
+        #   with:
+        #     node-version-file: '.nvmrc'
+        #     cache: npm
 
       - name: Build Electron app
-        run: scripts/build-release.sh linux
+        run: echo qwer > qwer.txt
+        # run: scripts/build-release.sh linux
 
       - name: Upload
-        run: scripts/upload-release.sh
-
-  mac-package:
-    runs-on: macos-latest
-
-    steps:
-      - name: Check out
-        uses: actions/checkout@v4
-
-      - name: Install Node.js
-        uses: actions/setup-node@v4
+        uses: softprops/action-gh-release@v2
         with:
-          node-version-file: '.nvmrc'
-          cache: npm
+          files: "*.txt"
+          tag_name: test
 
-      - name: Build Electron app
-        run: scripts/build-release.sh mac
+          # - name: Upload
+          #   run: scripts/upload-release.sh
 
-      - name: Upload
-        run: scripts/upload-release.sh
+        # mac-package:
+        #   runs-on: macos-latest
+
+        #   steps:
+        #     - name: Check out
+        #       uses: actions/checkout@v4
+
+        #     - name: Install Node.js
+        #       uses: actions/setup-node@v4
+        #       with:
+        #         node-version-file: '.nvmrc'
+        #         cache: npm
+
+        #     - name: Build Electron app
+        #       run: scripts/build-release.sh mac
+
+        #     - name: Upload
+        #       run: scripts/upload-release.sh
