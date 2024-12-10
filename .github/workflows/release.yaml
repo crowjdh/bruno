@@ -2,7 +2,8 @@ name: Release packages
 
 on:
   push:
-    branches: [feature/release-workflow]
+    branches:
+      - 'releases/**'
 
 jobs:
   linux-package:
@@ -12,40 +13,39 @@ jobs:
       - name: Check out
         uses: actions/checkout@v4
 
-        # - name: Install Node.js
-        #   uses: actions/setup-node@v4
-        #   with:
-        #     node-version-file: '.nvmrc'
-        #     cache: npm
+      - name: Install Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: '.nvmrc'
+          cache: npm
 
       - name: Build Electron app
-        run: echo qwer > qwer.txt
-        # run: scripts/build-release.sh linux
+        run: scripts/build-release.sh linux
 
       - name: Upload
         uses: softprops/action-gh-release@v2
         with:
-          files: "*.txt"
-          tag_name: test
+          files: '**/*.AppImage'
+          tag_name: latest
 
-          # - name: Upload
-          #   run: scripts/upload-release.sh
+  mac-package:
+    runs-on: macos-latest
 
-        # mac-package:
-        #   runs-on: macos-latest
+    steps:
+      - name: Check out
+        uses: actions/checkout@v4
 
-        #   steps:
-        #     - name: Check out
-        #       uses: actions/checkout@v4
+      - name: Install Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: '.nvmrc'
+          cache: npm
 
-        #     - name: Install Node.js
-        #       uses: actions/setup-node@v4
-        #       with:
-        #         node-version-file: '.nvmrc'
-        #         cache: npm
+      - name: Build Electron app
+        run: scripts/build-release.sh mac
 
-        #     - name: Build Electron app
-        #       run: scripts/build-release.sh mac
-
-        #     - name: Upload
-        #       run: scripts/upload-release.sh
+      - name: Upload
+        uses: softprops/action-gh-release@v2
+        with:
+          files: '**/*.dmg'
+          tag_name: latest
