@@ -3,7 +3,7 @@ name: Release packages
 on:
   push:
     branches:
-      - 'releases/**'
+      - 'release/**'
 
 jobs:
   linux-package:
@@ -13,39 +13,42 @@ jobs:
       - name: Check out
         uses: actions/checkout@v4
 
-      - name: Install Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version-file: '.nvmrc'
-          cache: npm
+      # - name: Install Node.js
+      #   uses: actions/setup-node@v4
+      #   with:
+      #     node-version-file: '.nvmrc'
+      #     cache: npm
 
-      - name: Build Electron app
-        run: scripts/build-release.sh linux
+      - name: test
+        run: export ASDF=${{ github.ref_name }}; echo ${ASDF##*\/}
 
-      - name: Upload
-        uses: softprops/action-gh-release@v2
-        with:
-          files: '**/*.AppImage'
-          tag_name: latest
+      # - name: Build Electron app
+      #   run: scripts/build-release.sh linux
+      #
+      # - name: Upload
+      #   uses: softprops/action-gh-release@v2
+      #   with:
+      #     files: '**/*.AppImage'
+      #     tag_name: latest
 
-  mac-package:
-    runs-on: macos-latest
-
-    steps:
-      - name: Check out
-        uses: actions/checkout@v4
-
-      - name: Install Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version-file: '.nvmrc'
-          cache: npm
-
-      - name: Build Electron app
-        run: scripts/build-release.sh mac
-
-      - name: Upload
-        uses: softprops/action-gh-release@v2
-        with:
-          files: '**/*.dmg'
-          tag_name: latest
+  # mac-package:
+  #   runs-on: macos-latest
+  #
+  #   steps:
+  #     - name: Check out
+  #       uses: actions/checkout@v4
+  #
+  #     - name: Install Node.js
+  #       uses: actions/setup-node@v4
+  #       with:
+  #         node-version-file: '.nvmrc'
+  #         cache: npm
+  #
+  #     - name: Build Electron app
+  #       run: scripts/build-release.sh mac
+  #
+  #     - name: Upload
+  #       uses: softprops/action-gh-release@v2
+  #       with:
+  #         files: '**/*.dmg'
+  #         tag_name: latest
