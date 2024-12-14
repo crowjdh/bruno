@@ -9,7 +9,7 @@ const config = {
     output: 'out'
   },
   files: ['**/*'],
-  afterSign: 'notarize.js',
+  // afterSign: 'notarize.js',
   mac: {
     artifactName: '${name}_${version}_${arch}_${os}.${ext}',
     category: 'public.app-category.developer-tools',
@@ -24,8 +24,8 @@ const config = {
       }
     ],
     icon: 'resources/icons/mac/icon.icns',
-    hardenedRuntime: true,
-    identity: 'Anoop MD (W7LPPWA48L)',
+    hardenedRuntime: false,
+    // identity: 'Anoop MD (W7LPPWA48L)',
     entitlements: 'resources/entitlements.mac.plist',
     entitlementsInherit: 'resources/entitlements.mac.plist'
   },
