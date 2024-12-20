@@ -1,5 +1,10 @@
 #!/bin/sh
 
+if [ $# -lt 1 ]; then
+  printf "Usage: $(basename $0) DISTRO(mac|linux)"
+  exit 1
+fi
+
 DIST="$1"
 
 npm ci --legacy-peer-deps
