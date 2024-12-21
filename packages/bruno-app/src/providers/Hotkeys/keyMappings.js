@@ -11,13 +11,13 @@ const KeyMapping = {
     name: 'Minimize Window'
   },
   switchToPreviousTab: {
-    mac: 'command+pageup',
-    windows: 'ctrl+pageup',
+    mac: 'command+[',
+    windows: 'ctrl+[',
     name: 'Switch to Previous Tab'
   },
   switchToNextTab: {
-    mac: 'command+pagedown',
-    windows: 'ctrl+pagedown',
+    mac: 'command+]',
+    windows: 'ctrl+]',
     name: 'Switch to Next Tab'
   },
   closeAllTabs: { mac: 'command+shift+w', windows: 'ctrl+shift+w', name: 'Close All Tabs' }
