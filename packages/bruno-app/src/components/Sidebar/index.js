@@ -4,7 +4,6 @@ import StyledWrapper from './StyledWrapper';
 import Preferences from 'components/Preferences';
 import Cookies from 'components/Cookies';
 import ToolHint from 'components/ToolHint';
-import GoldenEdition from './GoldenEdition';
 
 import { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
@@ -82,18 +81,6 @@ const Sidebar = () => {
   return (
     <StyledWrapper className="flex relative h-screen">
       <aside>
-        {goldenEditionOpen && (
-          <GoldenEdition
-            onClose={() => {
-              setGoldenEditionOpen(false);
-              document.querySelector('[data-trigger="golden-edition"]').focus();
-            }}
-            aria-modal="true"
-            role="dialog"
-            aria-labelledby="golden-edition-title"
-            aria-describedby="golden-edition-description"
-          />
-        )}
         <div className="flex flex-row h-screen w-full">
           {preferencesOpen && (
             <Preferences
