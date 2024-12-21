@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   IconSearch,
@@ -64,8 +64,26 @@ const CollectionsBadge = () => {
 
 const Collections = () => {
   const [searchText, setSearchText] = useState('');
+  const [searchQuery, setSearchQuery] = useState('');
+  const [debouncedSearchQuery, setDebouncedSearchQuery] = useState('');
   const { collections } = useSelector((state) => state.collections);
   const [createCollectionModalOpen, setCreateCollectionModalOpen] = useState(false);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedSearchQuery(searchQuery);
+    }, 250);
+
+    return () => clearTimeout(timer);
+  }, [searchQuery]);
+
+  useEffect(() => {
+    setSearchText(debouncedSearchQuery);
+  }, [debouncedSearchQuery]);
+
+  const handleSearchQueryChange = (e) => {
+    setSearchQuery(e.target.value);
+  };
 
   if (!collections || !collections.length) {
     return (
@@ -98,8 +116,8 @@ const Collections = () => {
           autoCapitalize="off"
           spellCheck="false"
           className="block w-full pl-7 py-1 sm:text-sm"
-          value={searchText}
-          onChange={(e) => setSearchText(e.target.value.toLowerCase())}
+          value={searchQuery}
+          onChange={handleSearchQueryChange}
         />
         {searchText !== '' && (
           <div className="absolute inset-y-0 right-0 pr-4 flex items-center">
