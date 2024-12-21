@@ -1,4 +1,5 @@
 const KeyMapping = {
+  focusSearchField: { mac: 'command+f', windows: 'ctrl+f', name: 'Focus Search Field' },
   save: { mac: 'command+s', windows: 'ctrl+s', name: 'Save' },
   sendRequest: { mac: 'command+enter', windows: 'ctrl+enter', name: 'Send Request' },
   editEnvironment: { mac: 'command+e', windows: 'ctrl+e', name: 'Edit Environment' },

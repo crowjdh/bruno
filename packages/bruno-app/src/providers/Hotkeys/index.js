@@ -160,6 +160,20 @@ export const HotkeysProvider = (props) => {
     };
   }, [dispatch]);
 
+  // Focus search field
+  useEffect(() => {
+    Mousetrap.bind([...getKeyBindingsForActionAllOS('focusSearchField')], (e) => {
+      const element = document.getElementById('search');
+      element.focus();
+
+      return false; // this stops the event bubbling
+    });
+
+    return () => {
+      Mousetrap.unbind([...getKeyBindingsForActionAllOS('focusSearchField')]);
+    };
+  }, [dispatch]);
+
   // Switch to the next tab
   useEffect(() => {
     Mousetrap.bind([...getKeyBindingsForActionAllOS('switchToNextTab')], (e) => {
