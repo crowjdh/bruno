@@ -5,7 +5,7 @@ const StyledWrapper = styled.div`
     cursor: col-resize;
   }
 
-  div.drag-request {
+  div.drag-request-horizontal {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -14,15 +14,37 @@ const StyledWrapper = styled.div`
     cursor: col-resize;
     background: transparent;
 
-    div.drag-request-border {
+    div.drag-request-horizontal-border {
       display: flex;
       height: 100%;
       width: 1px;
       border-left: solid 1px ${(props) => props.theme.requestTabPanel.dragbar.border};
     }
 
-    &:hover div.drag-request-border {
+    &:hover div.drag-request-horizontal-border {
       border-left: solid 1px ${(props) => props.theme.requestTabPanel.dragbar.activeBorder};
+    }
+  }
+    
+  div.drag-request-vertical {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 10px;
+    padding: 0;
+    cursor: row-resize;
+    background: transparent;
+
+    div.drag-request-vertical-border {
+      display: flex;
+      height: 1px;
+      width: 100%;
+      border-bottom: solid 1px ${(props) => props.theme.requestTabPanel.dragbar.border};
+    }
+
+    &:hover div.drag-request-vertical-border {
+      border-bottom: solid 1px ${(props) => props.theme.requestTabPanel.dragbar.activeBorder};
     }
   }
 
