@@ -9,6 +9,7 @@ import Display from './Display';
 import Keybindings from './Keybindings';
 
 import StyledWrapper from './StyledWrapper';
+import SplitView from './SplitView';
 
 const Preferences = ({ onClose }) => {
   const [tab, setTab] = useState('general');
@@ -40,6 +41,10 @@ const Preferences = ({ onClose }) => {
       case 'support': {
         return <Support />;
       }
+
+      case 'splitview': {
+        return <SplitView close={onClose} />;
+      }
     }
   };
 
@@ -62,6 +67,9 @@ const Preferences = ({ onClose }) => {
             </div>
             <div className={getTabClassname('support')} role="tab" onClick={() => setTab('support')}>
               Support
+            </div>
+            <div className={getTabClassname('splitview')} role="tab" onClick={() => setTab('splitview')}>
+              SplitView
             </div>
           </div>
           <section className="flex flex-grow px-2 pt-2 pb-6 tab-panel">{getTabPanel(tab)}</section>

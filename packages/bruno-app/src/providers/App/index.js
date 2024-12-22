@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { get } from 'lodash';
 import { useDispatch } from 'react-redux';
-import { refreshScreenWidth } from 'providers/ReduxStore/slices/app';
+import { refreshScreenWidth, refreshScreenHeight } from 'providers/ReduxStore/slices/app';
 import ConfirmAppClose from './ConfirmAppClose';
 import useIpcEvents from './useIpcEvents';
 import StyledWrapper from './StyledWrapper';
@@ -15,6 +15,7 @@ export const AppProvider = (props) => {
 
   useEffect(() => {
     dispatch(refreshScreenWidth());
+    dispatch(refreshScreenHeight());
   }, []);
 
   useEffect(() => {
@@ -27,6 +28,7 @@ export const AppProvider = (props) => {
   useEffect(() => {
     const handleResize = () => {
       dispatch(refreshScreenWidth());
+      dispatch(refreshScreenHeight());
     };
 
     window.addEventListener('resize', handleResize);

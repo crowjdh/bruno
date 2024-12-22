@@ -57,7 +57,15 @@ const RequestTabPanel = () => {
     focusedTab && focusedTab.requestPaneWidth ? focusedTab.requestPaneWidth : (screenWidth - asideWidth) / 2.2
   ); // 2.2 so that request pane is relatively smaller
   const [rightPaneWidth, setRightPaneWidth] = useState(screenWidth - asideWidth - leftPaneWidth - DEFAULT_PADDING);
-  const [dragging, setDragging] = useState(false);
+
+  const screenHeight = useSelector((state) => state.app.screenHeight);
+  const splitView = useSelector((state) => state.app.preferences.splitView);
+
+  const [topPaneHeight, setTopPaneHeight] = useState(screenHeight * 0.4)
+  const [bottomPaneHeight, setBottomPaneHeight] = useState(screenHeight * 0.4);
+
+  const [horizontalDragging, setHorizontalDragging] = useState(false);
+  const [verticalDragging, setVerticalDragging] = useState(false);
 
   // Not a recommended pattern here to have the child component
   // make a callback to set state, but treating this as an exception
@@ -76,16 +84,27 @@ const RequestTabPanel = () => {
   };
 
   useEffect(() => {
-    const leftPaneWidth = (screenWidth - asideWidth) / 2.2;
+    let leftPaneWidth = (screenWidth - asideWidth) / 2.2;
+
+    if (splitView.direction === 'vertical') {
+      leftPaneWidth = screenWidth - asideWidth - DEFAULT_PADDING;
+    }
+
     setLeftPaneWidth(leftPaneWidth);
-  }, [screenWidth]);
+  }, [screenWidth, splitView.direction]);
 
   useEffect(() => {
-    setRightPaneWidth(screenWidth - asideWidth - leftPaneWidth - DEFAULT_PADDING);
-  }, [screenWidth, asideWidth, leftPaneWidth]);
+    let rightPaneWidth = screenWidth - asideWidth - leftPaneWidth - DEFAULT_PADDING
+
+    if (splitView.direction === 'vertical') {
+      rightPaneWidth = screenWidth - asideWidth - DEFAULT_PADDING;
+    }
+
+    setRightPaneWidth(rightPaneWidth);
+  }, [screenWidth, asideWidth, leftPaneWidth, splitView.direction]);
 
   const handleMouseMove = (e) => {
-    if (dragging) {
+    if (horizontalDragging) {
       e.preventDefault();
       let leftPaneXPosition = e.clientX + 2;
       if (
@@ -97,11 +116,23 @@ const RequestTabPanel = () => {
       setLeftPaneWidth(leftPaneXPosition - asideWidth);
       setRightPaneWidth(screenWidth - e.clientX - DEFAULT_PADDING);
     }
+
+    if (verticalDragging) {
+      e.preventDefault();
+      let topPaneYPosition = e.clientY + 2;
+      if (topPaneYPosition < screenHeight * 0.1 || topPaneYPosition > screenHeight * 0.8) {
+        return;
+      }
+
+      const topPaneHeight = topPaneYPosition - 160;
+      setTopPaneHeight(topPaneHeight);
+      setBottomPaneHeight(screenHeight - topPaneHeight);
+    }
   };
   const handleMouseUp = (e) => {
-    if (dragging) {
+    if (horizontalDragging) {
       e.preventDefault();
-      setDragging(false);
+      setHorizontalDragging(false);
       dispatch(
         updateRequestPaneTabWidth({
           uid: activeTabUid,
@@ -109,10 +140,21 @@ const RequestTabPanel = () => {
         })
       );
     }
+
+    if (verticalDragging) {
+      e.preventDefault();
+      setVerticalDragging(false);
+    }
   };
-  const handleDragbarMouseDown = (e) => {
+
+  const handleHorizontalDragbarMouseDown = (e) => {
     e.preventDefault();
-    setDragging(true);
+    setHorizontalDragging(true);
+  };
+
+  const handleVerticalDragbarMouseDown = (e) => {
+    e.preventDefault();
+    setVerticalDragging(true);
   };
 
   useEffect(() => {
@@ -123,7 +165,7 @@ const RequestTabPanel = () => {
       document.removeEventListener('mouseup', handleMouseUp);
       document.removeEventListener('mousemove', handleMouseMove);
     };
-  }, [dragging, asideWidth]);
+  }, [horizontalDragging, verticalDragging, asideWidth]);
 
   if (!activeTabUid) {
     return <Welcome />;
@@ -171,16 +213,17 @@ const RequestTabPanel = () => {
   };
 
   return (
-    <StyledWrapper className={`flex flex-col flex-grow relative ${dragging ? 'dragging' : ''}`}>
+    <StyledWrapper className={`flex flex-col flex-grow relative ${horizontalDragging ? 'dragging' : ''}`}>
       <div className="pt-4 pb-3 px-4">
         <QueryUrl item={item} collection={collection} handleRun={handleRun} />
       </div>
-      <section className="main flex flex-grow pb-4 relative">
+      <section className={`main flex-grow pb-4 relative ${splitView.direction === 'vertical' ? 'flex-col' : 'flex-row'}`}>
         <section className="request-pane">
           <div
             className="px-4 h-full"
             style={{
-              width: `${Math.max(leftPaneWidth, MIN_LEFT_PANE_WIDTH)}px`
+              width: `${Math.max(leftPaneWidth, MIN_LEFT_PANE_WIDTH)}px`,
+              height: splitView.direction === 'vertical' ? `${topPaneHeight}px` : '100%'
             }}
           >
             {item.type === 'graphql-request' ? (
@@ -200,9 +243,17 @@ const RequestTabPanel = () => {
           </div>
         </section>
 
-        <div className="drag-request" onMouseDown={handleDragbarMouseDown}>
-          <div className="drag-request-border" />
-        </div>
+        {splitView.direction === 'horizontal' && (
+          <div className="drag-request-horizontal" onMouseDown={handleHorizontalDragbarMouseDown}>
+            <div className="drag-request-horizontal-border" />
+          </div>
+        )}
+
+        {splitView.direction === 'vertical' && (
+          <div className="drag-request-vertical" onMouseDown={handleVerticalDragbarMouseDown}>
+            <div className="drag-request-vertical-border" />
+          </div>
+        )}
 
         <section className="response-pane flex-grow">
           <ResponsePane item={item} collection={collection} rightPaneWidth={rightPaneWidth} response={item.response} />

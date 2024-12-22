@@ -9,6 +9,9 @@ const { get, merge } = require('lodash');
  */
 
 const defaultPreferences = {
+  splitView: {
+    direction: 'horizontal'
+  },
   request: {
     sslVerification: true,
     customCaCertificate: {
