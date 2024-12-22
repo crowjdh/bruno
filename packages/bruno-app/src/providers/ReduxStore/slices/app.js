@@ -24,7 +24,10 @@ const initialState = {
     },
     font: {
       codeFont: 'default'
-    }
+    },
+    splitView: {
+      direction: 'horizontal'
+    },
   },
   cookies: [],
   taskQueue: []

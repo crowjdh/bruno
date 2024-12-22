@@ -7,6 +7,7 @@ import Font from './Font';
 import Theme from './Theme';
 import Proxy from './ProxySettings';
 import StyledWrapper from './StyledWrapper';
+import View from './View';
 
 const Preferences = ({ onClose }) => {
   const [tab, setTab] = useState('general');
@@ -38,6 +39,10 @@ const Preferences = ({ onClose }) => {
       case 'font': {
         return <Font close={onClose} />;
       }
+
+      case 'view': {
+        return <View close={onClose} />;
+      }
     }
   };
 
@@ -59,6 +64,9 @@ const Preferences = ({ onClose }) => {
           </div>
           <div className={getTabClassname('support')} role="tab" onClick={() => setTab('support')}>
             Support
+          </div>
+          <div className={getTabClassname('view')} role="tab" onClick={() => setTab('view')}>
+            View
           </div>
         </div>
         <section className="flex flex-grow px-2 mt-4 tab-panel">{getTabPanel(tab)}</section>
