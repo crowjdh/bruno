@@ -7,6 +7,7 @@ const initialState = {
   idbConnectionReady: false,
   leftSidebarWidth: 222,
   screenWidth: 500,
+  screenHeight: 600,
   showHomePage: false,
   showPreferences: false,
   isEnvironmentSettingsModalOpen: false,
@@ -42,6 +43,9 @@ export const appSlice = createSlice({
     },
     refreshScreenWidth: (state) => {
       state.screenWidth = window.innerWidth;
+    },
+    refreshScreenHeight: (state) => {
+      state.screenHeight = window.innerHeight;
     },
     updateLeftSidebarWidth: (state, action) => {
       state.leftSidebarWidth = action.payload.leftSidebarWidth;
@@ -82,6 +86,7 @@ export const appSlice = createSlice({
 export const {
   idbConnectionReady,
   refreshScreenWidth,
+  refreshScreenHeight,
   updateLeftSidebarWidth,
   updateIsDragging,
   updateEnvironmentSettingsModalVisibility,
